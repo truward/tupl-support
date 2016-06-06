@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- *
+ * Default implementation of {@link BookDao}.
  *
  * @author Alexander Shabanov
  */
