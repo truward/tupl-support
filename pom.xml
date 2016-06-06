@@ -4,7 +4,7 @@
 
   <groupId>com.truward.tupl</groupId>
   <artifactId>tupl-support-root</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Tupl Support Project Root</name>
   <url>https://github.com/truward/tupl-support</url>
@@ -22,7 +22,7 @@
     <url>https://github.com/truward/tupl-support</url>
     <developerConnection>scm:git:git@github.com:truward/tupl-support.git</developerConnection>
     <connection>scm:git:git@github.com:truward/tupl-support.git</connection>
-    <tag>tupl-support-root-1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
