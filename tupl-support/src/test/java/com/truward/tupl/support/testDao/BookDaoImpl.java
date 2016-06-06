@@ -113,8 +113,8 @@ public class BookDaoImpl implements BookDao, IdSupport,
 
   @Nonnull
   private Book getBook(@Nonnull Transaction tx, @Nonnull String id) {
-    return loadObject(tx, BOOK_INDEX, id, (unusedId, result) -> {
-      final BookUpdate bookUpdate = new TestModelBase.ResultMapper<>(BookUpdate.class).map(unusedId, result);
+    return loadObject(tx, BOOK_INDEX, id, (bookId, result) -> {
+      final BookUpdate bookUpdate = new TestModelBase.ResultMapper<>(BookUpdate.class).map(bookId, result);
       final Book r = new Book();
       r.setId(id);
       r.setTitle(bookUpdate.getTitle());
