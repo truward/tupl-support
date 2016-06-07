@@ -12,6 +12,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * Support for load operations.
@@ -20,19 +22,30 @@ import java.util.List;
  */
 public interface TuplLoadSupport extends TuplIndexSupport, IdOperations {
 
+  @Nullable
+  default <T> T loadObject(@Nonnull Transaction tx,
+                           @Nonnull String indexName,
+                           @Nonnull String id,
+                           @Nonnull ByteArrayResultMapper<T> mapper,
+                           @Nonnull Supplier<T> defaultValueSupplier) {
+    return withIndex(indexName, index -> {
+      final byte[] result = index.load(tx, fromId(id));
+      if (result == null) {
+        return defaultValueSupplier.get();
+      }
+
+      return mapper.map(id, result);
+    });
+  }
+
   @Nonnull
   default <T> T loadObject(@Nonnull Transaction tx,
                            @Nonnull String indexName,
                            @Nonnull String id,
                            @Nonnull ByteArrayResultMapper<T> mapper) {
-    return withIndex(indexName, index -> {
-      final byte[] result = index.load(tx, fromId(id));
-      if (result == null) {
-        throw new ResultNotFoundException();
-      }
-
-      return mapper.map(id, result);
-    });
+    return Objects.requireNonNull(loadObject(tx, indexName, id, mapper, () -> {
+      throw new ResultNotFoundException("There is no object with id=" + id + " in index=" + indexName);
+    }), () -> "Contract violation: null returned for id=" + id + ", index=" + indexName);
   }
 
   @Nonnull
@@ -45,18 +58,27 @@ public interface TuplLoadSupport extends TuplIndexSupport, IdOperations {
     return withIndex(indexName, index -> {
       final byte[] startKey = fromNullableId(startId);
       final View view;
+
       switch (ordering) {
         case ASCENDING:
           view = index.viewGt(startKey);
           break;
         case DESCENDING:
-          view = index.viewLt(startKey);
+          if (startId != null) {
+            view = index.viewLt(startKey);
+          } else {
+            // TODO: better way to get reverse view if no key has been set?
+            view = index.viewGt(startKey).viewReverse();
+          }
+
           break;
         default:
           throw new IllegalArgumentException("Invalid ordering=" + ordering);
       }
+
       final Cursor cursor = view.newCursor(tx);
       cursor.first();
+
       try {
         final List<T> result = new ArrayList<>(limit);
         for (int i = 0; i < limit; ++i) {

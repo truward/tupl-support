@@ -1,5 +1,6 @@
 package com.truward.tupl.support.testDao;
 
+import com.truward.tupl.support.AbstractTuplDatabaseSupport;
 import com.truward.tupl.support.id.IdSupport;
 import com.truward.tupl.support.load.TuplLoadSupport;
 import com.truward.tupl.support.testModel.*;
@@ -20,23 +21,15 @@ import java.util.stream.Collectors;
  *
  * @author Alexander Shabanov
  */
-public class BookDaoImpl implements BookDao, IdSupport,
+public class BookDaoImpl extends AbstractTuplDatabaseSupport implements BookDao, IdSupport,
     TuplTransactionSupport, TuplUpdateSupport, TuplLoadSupport {
 
   private static final String AUTHOR_INDEX = "Author";
   private static final String GENRE_INDEX = "Genre";
   private static final String BOOK_INDEX = "Book";
 
-  private final Database db;
-
   public BookDaoImpl(@Nonnull Database db) {
-    this.db = Objects.requireNonNull(db, "db");
-  }
-
-  @Nonnull
-  @Override
-  public Database getDatabase() {
-    return db;
+    super(db);
   }
 
   @Nonnull

@@ -6,6 +6,7 @@ import com.truward.tupl.support.testModel.Author;
 import com.truward.tupl.support.testModel.Book;
 import com.truward.tupl.support.testModel.BookUpdate;
 import com.truward.tupl.support.testModel.Genre;
+import com.truward.tupl.support.testUtil.TestDbUtil;
 import org.cojen.tupl.Database;
 import org.cojen.tupl.DatabaseConfig;
 import org.cojen.tupl.DurabilityMode;
@@ -29,14 +30,7 @@ public final class TuplSupportTest {
 
   @Before
   public void init() throws IOException {
-    final File tmpFile = File.createTempFile("TuplSupport-BookDaoTest-", "-db");
-
-    // open new database, using weakest durability mode
-    final Database db = Database.open(new DatabaseConfig()
-        .baseFilePath(tmpFile.getPath())
-        .maxCacheSize(100_000L)
-        .durabilityMode(DurabilityMode.NO_REDO));
-    bookDao = new BookDaoImpl(db);
+    bookDao = new BookDaoImpl(TestDbUtil.createTempDb());
   }
 
   @Test
