@@ -3,9 +3,9 @@ package com.truward.tupl.support.load;
 import com.truward.tupl.support.exception.ResultNotFoundException;
 import com.truward.tupl.support.id.IdOperations;
 import com.truward.tupl.support.index.TuplIndexSupport;
+import com.truward.tupl.support.transaction.TuplTransactionSupport;
 import org.cojen.tupl.Cursor;
 import org.cojen.tupl.Ordering;
-import org.cojen.tupl.Transaction;
 import org.cojen.tupl.View;
 
 import javax.annotation.Nonnull;
@@ -20,42 +20,40 @@ import java.util.function.Supplier;
  *
  * @author Alexander Shabanov
  */
-public interface TuplLoadSupport extends TuplIndexSupport, IdOperations {
+public interface TuplLoadSupport extends TuplTransactionSupport, TuplIndexSupport, IdOperations {
 
   @Nullable
-  default <T> T loadObject(@Nonnull Transaction tx,
-                           @Nonnull String indexName,
+  default <T> T loadObject(@Nonnull String indexName,
                            @Nonnull String id,
                            @Nonnull ByteArrayResultMapper<T> mapper,
                            @Nonnull Supplier<T> defaultValueSupplier) {
-    return withIndex(indexName, index -> {
+    return withTransaction(tx -> withIndex(indexName, index -> {
       final byte[] result = index.load(tx, fromId(id));
       if (result == null) {
         return defaultValueSupplier.get();
       }
 
       return mapper.map(id, result);
-    });
+    }));
   }
 
   @Nonnull
-  default <T> T loadObject(@Nonnull Transaction tx,
-                           @Nonnull String indexName,
+  default <T> T loadObject(@Nonnull String indexName,
                            @Nonnull String id,
                            @Nonnull ByteArrayResultMapper<T> mapper) {
-    return Objects.requireNonNull(loadObject(tx, indexName, id, mapper, () -> {
+    return Objects.requireNonNull(loadObject(indexName, id, mapper, () -> {
       throw new ResultNotFoundException("There is no object with id=" + id + " in index=" + indexName);
     }), () -> "Contract violation: null returned for id=" + id + ", index=" + indexName);
   }
 
   @Nonnull
-  default <T> List<T> loadInOrder(@Nonnull Transaction tx,
-                                  @Nonnull String indexName,
+  default <T> List<T> loadInOrder(@Nonnull String indexName,
                                   @Nonnull Ordering ordering,
                                   @Nullable String startId,
+                                  int offset,
                                   int limit,
                                   @Nonnull ByteArrayResultMapper<T> mapper) {
-    return withIndex(indexName, index -> {
+    return withTransaction(tx -> withIndex(indexName, index -> {
       final byte[] startKey = fromNullableId(startId);
       final View view;
 
@@ -78,6 +76,9 @@ public interface TuplLoadSupport extends TuplIndexSupport, IdOperations {
 
       final Cursor cursor = view.newCursor(tx);
       cursor.first();
+      if (offset != 0) {
+        cursor.skip(offset);
+      }
 
       try {
         final List<T> result = new ArrayList<>(limit);
@@ -95,6 +96,6 @@ public interface TuplLoadSupport extends TuplIndexSupport, IdOperations {
       } finally {
         cursor.reset();
       }
-    });
+    }));
   }
 }

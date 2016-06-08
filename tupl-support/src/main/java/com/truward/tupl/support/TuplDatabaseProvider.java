@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
  *
  * @author Alexander Shabanov
  */
-public interface TuplDatabaseSupport {
+public interface TuplDatabaseProvider {
 
   @Nonnull
   Database getDatabase();

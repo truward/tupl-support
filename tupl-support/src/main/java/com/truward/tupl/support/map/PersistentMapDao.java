@@ -1,7 +1,7 @@
 package com.truward.tupl.support.map;
 
 import com.truward.tupl.support.map.support.StandardPersistentMapDao;
-import org.cojen.tupl.Database;
+import com.truward.tupl.support.transaction.TuplTransactionManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,22 +33,37 @@ public interface PersistentMapDao<TValue> {
   void delete(@Nonnull String key);
 
   @Nonnull
-  List<Map.Entry<String, TValue>> getEntries(@Nullable String startKey, int limit, boolean ascending);
+  List<Map.Entry<String, TValue>> getEntries(@Nullable String startKey, int offset, int limit, boolean ascending);
+
+  @Nonnull
+  default List<Map.Entry<String, TValue>> getEntries(@Nullable String startKey, int limit, boolean ascending) {
+    return getEntries(startKey, 0, limit, ascending);
+  }
 
   @Nonnull
   default List<Map.Entry<String, TValue>> getEntries(@Nullable String startKey, int limit) {
     return getEntries(startKey, limit, true);
   }
 
+  @Nonnull
+  default List<Map.Entry<String, TValue>> getEntries(int offset, int limit, boolean ascending) {
+    return getEntries(null, offset, limit, ascending);
+  }
+
+  @Nonnull
+  default List<Map.Entry<String, TValue>> getEntries(int offset, int limit) {
+    return getEntries(offset, limit, true);
+  }
+
   /**
    * Creates an instance of persistent map dao, that stores String-to-String associations.
    *
-   * @param db Database, where map is stored.
+   * @param txManager Transaction manager
    * @param indexName Index name
    * @return Map instance
    */
-  static PersistentMapDao<String> newStringMap(@Nonnull Database db, @Nonnull String indexName) {
-    return new StandardPersistentMapDao<String>(db, indexName) {
+  static PersistentMapDao<String> newStringMap(@Nonnull TuplTransactionManager txManager, @Nonnull String indexName) {
+    return new StandardPersistentMapDao<String>(txManager, indexName) {
       @Nonnull
       @Override
       protected byte[] toBytes(@Nonnull String s) {

@@ -7,19 +7,14 @@ import com.truward.tupl.support.testModel.Book;
 import com.truward.tupl.support.testModel.BookUpdate;
 import com.truward.tupl.support.testModel.Genre;
 import com.truward.tupl.support.testUtil.TestDbUtil;
-import org.cojen.tupl.Database;
-import org.cojen.tupl.DatabaseConfig;
-import org.cojen.tupl.DurabilityMode;
+import com.truward.tupl.support.transaction.support.StandardTuplTransactionManager;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Alexander Shabanov
@@ -30,7 +25,7 @@ public final class TuplSupportTest {
 
   @Before
   public void init() throws IOException {
-    bookDao = new BookDaoImpl(TestDbUtil.createTempDb());
+    bookDao = new BookDaoImpl(new StandardTuplTransactionManager(TestDbUtil.createTempDb()));
   }
 
   @Test

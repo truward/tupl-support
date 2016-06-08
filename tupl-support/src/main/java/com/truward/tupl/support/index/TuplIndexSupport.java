@@ -1,6 +1,6 @@
 package com.truward.tupl.support.index;
 
-import com.truward.tupl.support.TuplDatabaseSupport;
+import com.truward.tupl.support.TuplDatabaseProvider;
 import com.truward.tupl.support.exception.InternalErrorDaoException;
 import org.cojen.tupl.Index;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
  *
  * @author Alexander Shabanov
  */
-public interface TuplIndexSupport extends TuplDatabaseSupport {
+public interface TuplIndexSupport extends TuplDatabaseProvider {
 
   default <T> T withIndex(@Nonnull String indexName,
                           @Nonnull TuplIndexOperationCallback<T> callback) {
