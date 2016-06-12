@@ -35,7 +35,7 @@ See sample DAO implementation in [BookDaoImpl](https://github.com/truward/tupl-s
 See persistent map tests in:
 
 * [PersistentMapDaoTest](https://github.com/truward/tupl-support/blob/master/tupl-support/src/test/java/com/truward/tupl/support/map/PersistentMapDaoTest.java)
-* [PersistentMapDaoTest](https://github.com/truward/tupl-support/blob/master/tupl-protobuf-support/src/test/java/com/truward/tupl/protobuf/ProtobufModelPersistentMapDaoTest.java)
+* [ProtobufModelPersistentMapDaoTest](https://github.com/truward/tupl-support/blob/master/tupl-protobuf-support/src/test/java/com/truward/tupl/protobuf/ProtobufModelPersistentMapDaoTest.java)
 
 # How to use
 
