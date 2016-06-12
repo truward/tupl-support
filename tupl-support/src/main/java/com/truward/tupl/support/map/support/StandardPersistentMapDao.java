@@ -10,6 +10,7 @@ import org.cojen.tupl.Ordering;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
@@ -59,5 +60,5 @@ public abstract class StandardPersistentMapDao<TValue> extends AbstractTuplDaoSu
   protected abstract byte[] toBytes(@Nonnull TValue value);
 
   @Nonnull
-  protected abstract TValue toValue(@Nonnull String id, @Nonnull byte[] contents);
+  protected abstract TValue toValue(@Nonnull String id, @Nonnull byte[] contents) throws IOException;
 }

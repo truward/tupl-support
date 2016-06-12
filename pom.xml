@@ -54,6 +54,7 @@
   <modules>
     <module>tupl-test-support</module>
     <module>tupl-support</module>
+    <module>tupl-protobuf-support</module>
   </modules>
 
   <properties>

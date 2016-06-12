@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package tupl.support.test;
+
+option java_package = "com.truward.tupl.protobuf.test.model";
+option java_outer_classname = "Bookstore";
+
+//
+// Model
+//
+
+message Book {
+  string title = 1;
+  string isbn = 2;
+  int32 pages = 3;
+  repeated string authorIds = 4;
+  repeated string genreIds = 5;
+}
+
+message Author {
+  string name = 1;
+  string description = 2;
+}
+
+message Genre {
+  string shortName = 1;
+  string longName = 2;
+  string description = 3;
+}
