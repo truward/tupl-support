@@ -11,6 +11,7 @@ import org.cojen.tupl.View;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -53,6 +54,18 @@ public interface TuplLoadSupport extends TuplTransactionSupport, TuplIndexSuppor
                                   int offset,
                                   int limit,
                                   @Nonnull ByteArrayResultMapper<T> mapper) {
+    if (offset < 0) {
+      throw new IllegalArgumentException("offset < 0");
+    }
+
+    if (limit < 0) {
+      throw new IllegalArgumentException("limit < 0");
+    }
+
+    if (limit == 0) {
+      return Collections.emptyList();
+    }
+
     return withTransaction(tx -> withIndex(indexName, index -> {
       final byte[] startKey = fromNullableId(startId);
       final View view;
@@ -81,7 +94,7 @@ public interface TuplLoadSupport extends TuplTransactionSupport, TuplIndexSuppor
       }
 
       try {
-        final List<T> result = new ArrayList<>(limit);
+        final List<T> result = new ArrayList<>();
         for (int i = 0; i < limit; ++i) {
           final byte[] curKey = cursor.key();
           final byte[] curContents = cursor.value();
