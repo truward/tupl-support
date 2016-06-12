@@ -45,6 +45,6 @@ Add jar dependency in your pom.xml:
 <dependency>
   <groupId>com.truward.tupl</groupId>
   <artifactId>tupl-support</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2/version>
 </dependency>
 ```
