@@ -2,7 +2,6 @@ package com.truward.tupl.support;
 
 import com.truward.tupl.support.transaction.TuplTransactionManager;
 import com.truward.tupl.support.transaction.TuplTransactionSupport;
-import com.truward.tupl.support.transaction.support.AlwaysNewTuplTransactionManager;
 import org.cojen.tupl.Database;
 
 import javax.annotation.Nonnull;

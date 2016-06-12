@@ -6,8 +6,8 @@ import com.truward.tupl.support.testModel.Author;
 import com.truward.tupl.support.testModel.Book;
 import com.truward.tupl.support.testModel.BookUpdate;
 import com.truward.tupl.support.testModel.Genre;
-import com.truward.tupl.support.testUtil.TestDbUtil;
 import com.truward.tupl.support.transaction.support.StandardTuplTransactionManager;
+import com.truward.tupl.test.TuplTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public final class TuplSupportTest {
 
   @Before
   public void init() throws IOException {
-    bookDao = new BookDaoImpl(new StandardTuplTransactionManager(TestDbUtil.createTempDb()));
+    bookDao = new BookDaoImpl(new StandardTuplTransactionManager(TuplTestUtil.createTempDatabase()));
   }
 
   @Test

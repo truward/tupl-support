@@ -1,7 +1,7 @@
 package com.truward.tupl.support.map;
 
-import com.truward.tupl.support.testUtil.TestDbUtil;
 import com.truward.tupl.support.transaction.support.StandardTuplTransactionManager;
+import com.truward.tupl.test.TuplTestUtil;
 import org.cojen.tupl.Database;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public final class PersistentMapDaoTest {
 
   @Before
   public void init() throws IOException {
-    final Database db = TestDbUtil.createTempDb();
+    final Database db = TuplTestUtil.createTempDatabase();
     mapDao = PersistentMapDao.newStringMap(new StandardTuplTransactionManager(db), "testMap");
   }
 
