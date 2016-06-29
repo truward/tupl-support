@@ -1,7 +1,7 @@
 package com.truward.tupl.support.map.support;
 
 import com.truward.tupl.support.AbstractTuplDaoSupport;
-import com.truward.tupl.support.id.IdSupport;
+import com.truward.tupl.support.id.Key;
 import com.truward.tupl.support.load.TuplLoadSupport;
 import com.truward.tupl.support.map.PersistentMapDao;
 import com.truward.tupl.support.transaction.TuplTransactionManager;
@@ -21,7 +21,7 @@ import java.util.function.Supplier;
  * @param <TValue> Value type
  */
 public abstract class StandardPersistentMapDao<TValue> extends AbstractTuplDaoSupport
-    implements PersistentMapDao<TValue>, IdSupport, TuplLoadSupport, TuplUpdateSupport {
+    implements PersistentMapDao<TValue>, TuplLoadSupport, TuplUpdateSupport {
 
   private final String indexName;
 
@@ -31,24 +31,24 @@ public abstract class StandardPersistentMapDao<TValue> extends AbstractTuplDaoSu
   }
 
   @Override
-  public void put(@Nonnull String key, @Nonnull TValue value) {
+  public void put(@Nonnull Key key, @Nonnull TValue value) {
     storeObject(indexName, key, toBytes(value));
   }
 
   @Override
   @Nullable
-  public TValue get(@Nonnull String key, @Nonnull Supplier<TValue> defaultValueSupplier) {
+  public TValue get(@Nonnull Key key, @Nonnull Supplier<TValue> defaultValueSupplier) {
     return loadObject(indexName, key, this::toValue, defaultValueSupplier);
   }
 
   @Override
-  public void delete(@Nonnull String key) {
+  public void delete(@Nonnull Key key) {
     deleteObject(indexName, key);
   }
 
   @Nonnull
   @Override
-  public List<Map.Entry<String, TValue>> getEntries(@Nullable String startKey, int offset, int limit, boolean ascending) {
+  public List<Map.Entry<Key, TValue>> getEntries(@Nullable Key startKey, int offset, int limit, boolean ascending) {
     return loadInOrder(indexName, ascending ? Ordering.ASCENDING : Ordering.DESCENDING,
         startKey,
         offset,
@@ -60,5 +60,5 @@ public abstract class StandardPersistentMapDao<TValue> extends AbstractTuplDaoSu
   protected abstract byte[] toBytes(@Nonnull TValue value);
 
   @Nonnull
-  protected abstract TValue toValue(@Nonnull String id, @Nonnull byte[] contents) throws IOException;
+  protected abstract TValue toValue(@Nonnull Key id, @Nonnull byte[] contents) throws IOException;
 }

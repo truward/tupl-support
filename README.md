@@ -19,7 +19,7 @@ This library includes the following modules:
 
 * ``TuplTransactionManager`` and its descendant ``StandardTuplTransactionManager`` which is a central interface, around which every DAO revolves.
 This interface provides a contract for accessing Tupl transactions which is then used by all extension interfaces, provided in ``tupl-support``.
-* ``IdSupport`` - helper interface with default methods that provides a way to create an ID and convert that ID to and from byte array Tupl keys
+* ``Key`` - wrapper on top of byte arrays that intended to represent Tupl keys
 * ``DaoException`` and its descendants - provides a common set of exceptions, thrown from Tupl DAOs.
 * ``TuplLoadSupport`` and ``ByteArrayResultMapper`` - base entities that provide support for uniform data retrieval from Tupl databases.
 * ``TuplUpdateSupport`` - helper interface with default methods that provide support for insert, update and delete operations.

@@ -1,5 +1,7 @@
 package com.truward.tupl.support.load;
 
+import com.truward.tupl.support.id.Key;
+
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
@@ -12,5 +14,5 @@ import java.io.IOException;
 public interface ByteArrayResultMapper<T> {
 
   @Nonnull
-  T map(@Nonnull String id, @Nonnull byte[] objectContents) throws IOException;
+  T map(@Nonnull Key key, @Nonnull byte[] value) throws IOException;
 }

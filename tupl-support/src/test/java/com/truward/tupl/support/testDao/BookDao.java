@@ -1,5 +1,6 @@
 package com.truward.tupl.support.testDao;
 
+import com.truward.tupl.support.id.Key;
 import com.truward.tupl.support.testModel.Author;
 import com.truward.tupl.support.testModel.Book;
 import com.truward.tupl.support.testModel.BookUpdate;
@@ -15,23 +16,23 @@ import java.util.List;
 public interface BookDao {
 
   @Nonnull
-  Author getAuthor(@Nonnull String id);
+  Author getAuthor(@Nonnull Key id);
 
   @Nonnull
-  String saveAuthor(@Nonnull Author author);
+  Key saveAuthor(@Nonnull Author author);
 
   @Nonnull
-  List<Author> getAuthors(@Nullable String startId, int limit);
+  List<Author> getAuthors(@Nullable Key startId, int limit);
 
   @Nonnull
-  Genre getGenre(@Nonnull String id);
+  Genre getGenre(@Nonnull Key id);
 
   @Nonnull
-  String saveGenre(@Nonnull Genre genre);
+  Key saveGenre(@Nonnull Genre genre);
 
   @Nonnull
-  Book getBook(@Nonnull String id);
+  Book getBook(@Nonnull Key id);
 
   @Nonnull
-  String saveBook(@Nonnull BookUpdate bookUpdate);
+  Key saveBook(@Nonnull BookUpdate bookUpdate);
 }

@@ -1,5 +1,7 @@
 package com.truward.tupl.support.testModel;
 
+import com.truward.tupl.support.id.Key;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -7,18 +9,18 @@ import javax.annotation.Nullable;
  * Genre domain model.
  */
 public final class Genre implements TestModelBase {
-  private String id;
+  private Key id;
   private String shortName = "";
   private String longName = "";
   private String description = "";
 
   @Nullable
-  public String getId() {
+  public Key getId() {
     return id;
   }
 
   @Override
-  public void setId(@Nullable String id) {
+  public void setId(@Nullable Key id) {
     this.id = id;
   }
 

@@ -1,5 +1,6 @@
 package com.truward.tupl.support.map;
 
+import com.truward.tupl.support.id.Key;
 import com.truward.tupl.support.map.support.StandardPersistentMapDao;
 import com.truward.tupl.support.transaction.TuplTransactionManager;
 
@@ -20,38 +21,38 @@ import java.util.function.Supplier;
  */
 public interface PersistentMapDao<TValue> {
 
-  void put(@Nonnull String key, @Nonnull TValue value);
+  void put(@Nonnull Key key, @Nonnull TValue value);
 
   @Nullable
-  TValue get(@Nonnull String key, @Nonnull Supplier<TValue> defaultValueSupplier);
+  TValue get(@Nonnull Key key, @Nonnull Supplier<TValue> defaultValueSupplier);
 
   @Nullable
-  default TValue get(@Nonnull String key) {
+  default TValue get(@Nonnull Key key) {
     return get(key, () -> null);
   }
 
-  void delete(@Nonnull String key);
+  void delete(@Nonnull Key key);
 
   @Nonnull
-  List<Map.Entry<String, TValue>> getEntries(@Nullable String startKey, int offset, int limit, boolean ascending);
+  List<Map.Entry<Key, TValue>> getEntries(@Nullable Key startKey, int offset, int limit, boolean ascending);
 
   @Nonnull
-  default List<Map.Entry<String, TValue>> getEntries(@Nullable String startKey, int limit, boolean ascending) {
+  default List<Map.Entry<Key, TValue>> getEntries(@Nullable Key startKey, int limit, boolean ascending) {
     return getEntries(startKey, 0, limit, ascending);
   }
 
   @Nonnull
-  default List<Map.Entry<String, TValue>> getEntries(@Nullable String startKey, int limit) {
+  default List<Map.Entry<Key, TValue>> getEntries(@Nullable Key startKey, int limit) {
     return getEntries(startKey, limit, true);
   }
 
   @Nonnull
-  default List<Map.Entry<String, TValue>> getEntries(int offset, int limit, boolean ascending) {
+  default List<Map.Entry<Key, TValue>> getEntries(int offset, int limit, boolean ascending) {
     return getEntries(null, offset, limit, ascending);
   }
 
   @Nonnull
-  default List<Map.Entry<String, TValue>> getEntries(int offset, int limit) {
+  default List<Map.Entry<Key, TValue>> getEntries(int offset, int limit) {
     return getEntries(offset, limit, true);
   }
 
@@ -72,7 +73,7 @@ public interface PersistentMapDao<TValue> {
 
       @Nonnull
       @Override
-      protected String toValue(@Nonnull String id, @Nonnull byte[] contents) {
+      protected String toValue(@Nonnull Key id, @Nonnull byte[] contents) {
         return new String(contents, StandardCharsets.UTF_8);
       }
     };

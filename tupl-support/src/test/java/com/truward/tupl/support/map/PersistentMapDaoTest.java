@@ -1,5 +1,6 @@
 package com.truward.tupl.support.map;
 
+import com.truward.tupl.support.id.Key;
 import com.truward.tupl.support.transaction.support.StandardTuplTransactionManager;
 import com.truward.tupl.test.TuplTestUtil;
 import org.cojen.tupl.Database;
@@ -21,7 +22,7 @@ public final class PersistentMapDaoTest {
 
   private PersistentMapDao<String> mapDao;
 
-  private static final List<Map.Entry<String, String>> EMPTY_ENTRIES = Collections.<Map.Entry<String, String>>emptyList();
+  private static final List<Map.Entry<Key, String>> EMPTY_ENTRIES = Collections.<Map.Entry<Key, String>>emptyList();
 
   @Before
   public void init() throws IOException {
@@ -32,18 +33,18 @@ public final class PersistentMapDaoTest {
   @Test
   public void shouldAssociateAndGetBack() {
     // should get no entries
-    assertNull(mapDao.get("1"));
+    assertNull(mapDao.get(Key.from("1")));
 
     // should get default entry
     final String defaultValue = "defaultValue";
-    assertEquals(defaultValue, mapDao.get("1", () -> defaultValue));
+    assertEquals(defaultValue, mapDao.get(Key.from("1"), () -> defaultValue));
 
-    mapDao.put("1", "one");
-    assertEquals("one", mapDao.get("1"));
+    mapDao.put(Key.from("1"), "one");
+    assertEquals("one", mapDao.get(Key.from("1")));
 
     // should get no entry after deleting it
-    mapDao.delete("1");
-    assertNull(mapDao.get("1"));
+    mapDao.delete(Key.from("1"));
+    assertNull(mapDao.get(Key.from("1")));
   }
 
   @Test
@@ -51,9 +52,9 @@ public final class PersistentMapDaoTest {
     // empty map enumeration
     assertEquals(EMPTY_ENTRIES, mapDao.getEntries(null, 10));
 
-    mapDao.put("1", "one");
-    mapDao.put("2", "two");
-    mapDao.put("3", "three");
+    mapDao.put(Key.from("1"), "one");
+    mapDao.put(Key.from("2"), "two");
+    mapDao.put(Key.from("3"), "three");
 
     // ID-based pagination queries with zero limit
     assertEquals(EMPTY_ENTRIES, mapDao.getEntries(null, 0, true));
@@ -63,13 +64,13 @@ public final class PersistentMapDaoTest {
     assertEquals(Arrays.asList(entry("1", "one"), entry("2", "two")),
         mapDao.getEntries(null, 2));
     assertEquals(Collections.singletonList(entry("3", "three")),
-        mapDao.getEntries("2", 2));
+        mapDao.getEntries(Key.from("2"), 2));
 
     // descending ID-based pagination queries
     assertEquals(Arrays.asList(entry("3", "three"), entry("2", "two")),
         mapDao.getEntries(null, 2, false));
     assertEquals(Collections.singletonList(entry("1", "one")),
-        mapDao.getEntries("2", 2, false));
+        mapDao.getEntries(Key.from("2"), 2, false));
 
     // Offset-based pagination queries with zero limit
     assertEquals(EMPTY_ENTRIES, mapDao.getEntries(0, 0, true));
@@ -90,7 +91,7 @@ public final class PersistentMapDaoTest {
         mapDao.getEntries(2, 2, false));
 
     // delete first entry and query
-    mapDao.delete("1");
+    mapDao.delete(Key.from("1"));
     assertEquals(Arrays.asList(entry("2", "two"), entry("3", "three")),
         mapDao.getEntries(null, 10));
   }
@@ -99,7 +100,7 @@ public final class PersistentMapDaoTest {
   // Private
   //
 
-  private static Map.Entry<String, String> entry(String key, String value) {
-    return new AbstractMap.SimpleImmutableEntry<>(key, value);
+  private static Map.Entry<Key, String> entry(String key, String value) {
+    return new AbstractMap.SimpleImmutableEntry<>(Key.from(key), value);
   }
 }

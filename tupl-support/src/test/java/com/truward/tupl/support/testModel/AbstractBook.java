@@ -1,5 +1,7 @@
 package com.truward.tupl.support.testModel;
 
+import com.truward.tupl.support.id.Key;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public abstract class AbstractBook<TAuthor, TGenre> implements TestModelBase {
 
-  private String id;
+  private Key id;
   private String title = "";
   private String isbn = "";
   private int pages = 0;
@@ -18,12 +20,12 @@ public abstract class AbstractBook<TAuthor, TGenre> implements TestModelBase {
   private List<TGenre> genres = Collections.emptyList();
 
   @Nullable
-  public String getId() {
+  public Key getId() {
     return id;
   }
 
   @Override
-  public void setId(@Nullable String id) {
+  public void setId(@Nullable Key id) {
     this.id = id;
   }
 

@@ -1,5 +1,7 @@
 package com.truward.tupl.support.exception;
 
+import com.truward.tupl.support.id.Key;
+
 /**
  * An error, thrown when given key has not been found.
  *
@@ -8,6 +10,10 @@ package com.truward.tupl.support.exception;
 public class KeyNotFoundException extends DaoException {
 
   public KeyNotFoundException() {
+  }
+
+  public KeyNotFoundException(Key key) {
+    super("Unknown key=" + key);
   }
 
   public KeyNotFoundException(String message) {

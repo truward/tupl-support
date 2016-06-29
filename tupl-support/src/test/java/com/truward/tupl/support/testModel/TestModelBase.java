@@ -1,5 +1,6 @@
 package com.truward.tupl.support.testModel;
 
+import com.truward.tupl.support.id.Key;
 import com.truward.tupl.support.load.ByteArrayResultMapper;
 
 import javax.annotation.Nonnull;
@@ -17,7 +18,7 @@ import java.io.*;
  */
 public interface TestModelBase extends Serializable {
 
-  void setId(String id);
+  void setId(Key id);
 
   final class ResultMapper<T extends TestModelBase> implements ByteArrayResultMapper<T> {
     final Class<T> clazz;
@@ -28,7 +29,7 @@ public interface TestModelBase extends Serializable {
 
     @Nonnull
     @Override
-    public T map(@Nonnull String id, @Nonnull byte[] objectContents) throws IOException {
+    public T map(@Nonnull Key id, @Nonnull byte[] objectContents) throws IOException {
       try (final ByteArrayInputStream is = new ByteArrayInputStream(objectContents)) {
         try (final ObjectInputStream ois = new ObjectInputStream(is)) {
           final T result = clazz.cast(ois.readObject());

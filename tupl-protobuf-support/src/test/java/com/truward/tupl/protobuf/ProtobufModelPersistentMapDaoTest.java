@@ -1,5 +1,6 @@
 package com.truward.tupl.protobuf;
 
+import com.truward.tupl.support.id.Key;
 import com.truward.tupl.support.map.PersistentMapDao;
 import com.truward.tupl.support.transaction.TuplTransactionManager;
 import com.truward.tupl.support.transaction.support.StandardTuplTransactionManager;
@@ -29,10 +30,10 @@ public final class ProtobufModelPersistentMapDaoTest {
   public void shouldPersistAndRestoreAuthor() {
     // Given:
     final Author author = Author.newBuilder().setName("Author Name").setDescription("Description").build();
-    final String authorKey = "1";
+    final Key authorKey = Key.from("1");
 
     // When:
-    authorMapDao.put("1", author);
+    authorMapDao.put(Key.from("1"), author);
 
     // Then:
     assertEquals(author, authorMapDao.get(authorKey));
@@ -50,7 +51,7 @@ public final class ProtobufModelPersistentMapDaoTest {
 
     @Nonnull
     @Override
-    protected Author toValue(@Nonnull String id, @Nonnull byte[] contents) throws IOException {
+    protected Author toValue(@Nonnull Key id, @Nonnull byte[] contents) throws IOException {
       return Author.parseFrom(contents);
     }
   }

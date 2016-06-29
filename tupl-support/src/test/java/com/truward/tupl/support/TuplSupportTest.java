@@ -1,5 +1,6 @@
 package com.truward.tupl.support;
 
+import com.truward.tupl.support.id.Key;
 import com.truward.tupl.support.testDao.BookDao;
 import com.truward.tupl.support.testDao.BookDaoImpl;
 import com.truward.tupl.support.testModel.Author;
@@ -35,7 +36,7 @@ public final class TuplSupportTest {
     author.setDescription("Famous novellist of early 20th century");
 
     // insert
-    final String id = bookDao.saveAuthor(author);
+    final Key id = bookDao.saveAuthor(author);
     assertNotNull(id);
 
     author.setId(id);
@@ -48,7 +49,7 @@ public final class TuplSupportTest {
     author.setName("Stephen King");
     author.setDescription("Modern writer in fantasy and horror genres");
 
-    final String actualId = bookDao.saveAuthor(author);
+    final Key actualId = bookDao.saveAuthor(author);
     assertEquals(id, actualId);
 
     // retrieve/match #2
@@ -101,7 +102,7 @@ public final class TuplSupportTest {
     genre.setDescription("Science Fiction Genre");
 
     // insert
-    final String id = bookDao.saveGenre(genre);
+    final Key id = bookDao.saveGenre(genre);
     assertNotNull(id);
 
     genre.setId(id);
@@ -115,7 +116,7 @@ public final class TuplSupportTest {
     genre.setLongName("Fantasy");
     genre.setDescription("Fantasy");
 
-    final String actualId = bookDao.saveGenre(genre);
+    final Key actualId = bookDao.saveGenre(genre);
     assertEquals(id, actualId);
 
     // retrieve/match #2
@@ -140,7 +141,7 @@ public final class TuplSupportTest {
     bookUpdate.setAuthors(Collections.singletonList(jackLondon.getId()));
     bookUpdate.setGenres(Collections.singletonList(novel.getId()));
 
-    final String id = bookDao.saveBook(bookUpdate);
+    final Key id = bookDao.saveBook(bookUpdate);
 
     final Book book = new Book(bookUpdate);
     book.setId(id);
@@ -156,7 +157,7 @@ public final class TuplSupportTest {
     bookUpdate.setAuthors(Collections.singletonList(stephenKing.getId()));
     bookUpdate.setGenres(Arrays.asList(sciFi.getId(), fantasy.getId(), detective.getId()));
 
-    final String actualId = bookDao.saveBook(bookUpdate);
+    final Key actualId = bookDao.saveBook(bookUpdate);
     assertEquals(id, actualId);
 
     final Book book2 = new Book(bookUpdate);
@@ -176,7 +177,7 @@ public final class TuplSupportTest {
     genre.setLongName(genreName + " Genre");
     genre.setDescription(genreName + " Description");
 
-    final String id = bookDao.saveGenre(genre);
+    final Key id = bookDao.saveGenre(genre);
     genre.setId(id);
     return genre;
   }
@@ -186,7 +187,7 @@ public final class TuplSupportTest {
     author.setName(name);
     author.setDescription(name + " Description");
 
-    final String id = bookDao.saveAuthor(author);
+    final Key id = bookDao.saveAuthor(author);
     author.setId(id);
     return author;
   }

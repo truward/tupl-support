@@ -1,7 +1,7 @@
 package com.truward.tupl.support.testDao;
 
 import com.truward.tupl.support.AbstractTuplDaoSupport;
-import com.truward.tupl.support.id.IdSupport;
+import com.truward.tupl.support.id.Key;
 import com.truward.tupl.support.load.TuplLoadSupport;
 import com.truward.tupl.support.testModel.*;
 import com.truward.tupl.support.transaction.TuplTransactionManager;
@@ -18,8 +18,7 @@ import java.util.stream.Collectors;
  *
  * @author Alexander Shabanov
  */
-public class BookDaoImpl extends AbstractTuplDaoSupport implements BookDao, IdSupport,
-    TuplUpdateSupport, TuplLoadSupport {
+public class BookDaoImpl extends AbstractTuplDaoSupport implements BookDao, TuplUpdateSupport, TuplLoadSupport {
 
   private static final String AUTHOR_INDEX = "Author";
   private static final String GENRE_INDEX = "Genre";
@@ -31,37 +30,37 @@ public class BookDaoImpl extends AbstractTuplDaoSupport implements BookDao, IdSu
 
   @Nonnull
   @Override
-  public Author getAuthor(@Nonnull String id) {
+  public Author getAuthor(@Nonnull Key id) {
     return loadObject(AUTHOR_INDEX, id, new TestModelBase.ResultMapper<>(Author.class));
   }
 
   @Nonnull
   @Override
-  public String saveAuthor(@Nonnull Author author) {
+  public Key saveAuthor(@Nonnull Author author) {
     return updateObject(AUTHOR_INDEX, author.getId(), author.toBytes());
   }
 
   @Nonnull
   @Override
-  public List<Author> getAuthors(@Nullable String startId, int limit) {
+  public List<Author> getAuthors(@Nullable Key startId, int limit) {
     return loadInOrder(AUTHOR_INDEX, Ordering.ASCENDING, startId, 0, limit, new TestModelBase.ResultMapper<>(Author.class));
   }
 
   @Nonnull
   @Override
-  public Genre getGenre(@Nonnull String id) {
+  public Genre getGenre(@Nonnull Key id) {
     return loadObject(GENRE_INDEX, id, new TestModelBase.ResultMapper<>(Genre.class));
   }
 
   @Nonnull
   @Override
-  public String saveGenre(@Nonnull Genre genre) {
+  public Key saveGenre(@Nonnull Genre genre) {
     return updateObject(GENRE_INDEX, genre.getId(), genre.toBytes());
   }
 
   @Nonnull
   @Override
-  public Book getBook(@Nonnull String id) {
+  public Book getBook(@Nonnull Key id) {
     return loadObject(BOOK_INDEX, id, (bookId, result) -> {
       final BookUpdate bookUpdate = new TestModelBase.ResultMapper<>(BookUpdate.class).map(bookId, result);
       final Book r = new Book();
@@ -83,7 +82,7 @@ public class BookDaoImpl extends AbstractTuplDaoSupport implements BookDao, IdSu
 
   @Nonnull
   @Override
-  public String saveBook(@Nonnull BookUpdate bookUpdate) {
+  public Key saveBook(@Nonnull BookUpdate bookUpdate) {
     return updateObject(BOOK_INDEX, bookUpdate.getId(), bookUpdate.toBytes());
   }
 }

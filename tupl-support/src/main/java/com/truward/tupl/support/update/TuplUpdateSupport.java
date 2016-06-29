@@ -1,7 +1,7 @@
 package com.truward.tupl.support.update;
 
 import com.truward.tupl.support.exception.KeyNotFoundException;
-import com.truward.tupl.support.id.IdOperations;
+import com.truward.tupl.support.id.Key;
 import com.truward.tupl.support.index.TuplIndexSupport;
 import com.truward.tupl.support.transaction.TuplTransactionSupport;
 
@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
  *
  * @author Alexander Shabanov
  */
-public interface TuplUpdateSupport extends TuplTransactionSupport, TuplIndexSupport, IdOperations {
+public interface TuplUpdateSupport extends TuplTransactionSupport, TuplIndexSupport {
 
   /**
    * Inserts or replaces an object in the database, depending on whether the
@@ -25,20 +25,20 @@ public interface TuplUpdateSupport extends TuplTransactionSupport, TuplIndexSupp
    * @return ID of the updated object. Matches given ID if passed ID is null
    */
   @Nonnull
-  default String updateObject(@Nonnull String indexName,
-                              @Nullable String id,
-                              @Nonnull byte[] objectContents) {
+  default Key updateObject(@Nonnull String indexName,
+                           @Nullable Key id,
+                           @Nonnull byte[] objectContents) {
     return withTransaction(tx -> withIndex(indexName, index -> {
-      String resultId = id;
+      Key resultId = id;
       if (resultId != null) {
-        if (!index.replace(tx, fromId(resultId), objectContents)) {
+        if (!index.replace(tx, resultId.getBytes(), objectContents)) {
           throw new KeyNotFoundException(id);
         }
       } else {
         boolean inserted;
         do {
-          resultId = generateId();
-          inserted = index.insert(tx, fromId(resultId), objectContents);
+          resultId = Key.random();
+          inserted = index.insert(tx, resultId.getBytes(), objectContents);
         } while (!inserted); // repeat until new key is created
       }
       return resultId;
@@ -53,10 +53,10 @@ public interface TuplUpdateSupport extends TuplTransactionSupport, TuplIndexSupp
    * @param objectContents Object contents, to be associated with a given ID
    */
   default void storeObject(@Nonnull String indexName,
-                           @Nonnull String id,
+                           @Nonnull Key id,
                            @Nonnull byte[] objectContents) {
     withTransaction(tx -> withIndex(indexName, index -> {
-      index.store(tx, fromId(id), objectContents);
+      index.store(tx, id.getBytes(), objectContents);
       return null;
     }));
   }
@@ -68,7 +68,7 @@ public interface TuplUpdateSupport extends TuplTransactionSupport, TuplIndexSupp
    * @param id ID of the object to be deleted
    * @return True, if object with a specified key has been found
    */
-  default boolean deleteObject(@Nonnull String indexName, @Nonnull String id) {
-    return withTransaction(tx -> withIndex(indexName, index -> index.delete(tx, fromId(id))));
+  default boolean deleteObject(@Nonnull String indexName, @Nonnull Key id) {
+    return withTransaction(tx -> withIndex(indexName, index -> index.delete(tx, id.getBytes())));
   }
 }
