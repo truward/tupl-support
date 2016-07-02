@@ -4,7 +4,7 @@
   <parent>
     <artifactId>tupl-support-root</artifactId>
     <groupId>com.truward.tupl</groupId>
-    <version>1.1.4</version>
+    <version>1.1.5-SNAPSHOT</version>
   </parent>
 
   <artifactId>tupl-support</artifactId>
