@@ -6,6 +6,7 @@ import com.truward.tupl.support.transaction.TuplTransactionManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public interface PersistentMapDao<TValue> {
   }
 
   /**
-   * Creates an instance of persistent map dao, that stores String-to-String associations.
+   * Creates an instance of persistent map dao, that stores Key-to-String associations.
    *
    * @param txManager Transaction manager
    * @param indexName Index name
@@ -75,6 +76,29 @@ public interface PersistentMapDao<TValue> {
       @Override
       protected String toValue(@Nonnull Key id, @Nonnull byte[] contents) {
         return new String(contents, StandardCharsets.UTF_8);
+      }
+    };
+  }
+
+  /**
+   * Creates an instance of persistent map dao, that stores Key-to-byte[] associations.
+   *
+   * @param txManager Transaction manager
+   * @param indexName Index name
+   * @return Map instance
+   */
+  static PersistentMapDao<byte[]> newByteArrayMap(@Nonnull TuplTransactionManager txManager, @Nonnull String indexName) {
+    return new StandardPersistentMapDao<byte[]>(txManager, indexName) {
+      @Nonnull
+      @Override
+      protected byte[] toBytes(@Nonnull byte[] bytes) {
+        return bytes;
+      }
+
+      @Nonnull
+      @Override
+      protected byte[] toValue(@Nonnull Key id, @Nonnull byte[] contents) throws IOException {
+        return contents;
       }
     };
   }

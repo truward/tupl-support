@@ -14,6 +14,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Tupl key wrapper around byte array.
+ * <p>
+ * In order to reliably transform key to and from string representation, please use
+ * {@link #toBase64()} and {@link #fromBase64(String)} methods accordingly.
+ * </p>
  *
  * @author Alexander Shabanov
  */
@@ -70,6 +74,23 @@ public final class Key implements Serializable, Comparable<Key> {
   @Nonnull
   public static Key from(@Nonnull String value) {
     return new Key(value.getBytes(StandardCharsets.UTF_8));
+  }
+
+  @Nonnull
+  public static Key fromBase64(@Nonnull String base64Value) {
+    return Key.inplace(DatatypeConverter.parseBase64Binary(base64Value));
+  }
+
+  @Nonnull
+  public String toBase64() {
+    return DatatypeConverter.printBase64Binary(getBytesNoCopy());
+  }
+
+  /**
+   * @return Size of this key, in bytes
+   */
+  public int getByteSize() {
+    return key.length;
   }
 
   /**

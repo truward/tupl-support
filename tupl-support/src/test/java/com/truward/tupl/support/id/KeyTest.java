@@ -26,7 +26,7 @@ public final class KeyTest {
 
     assertEquals(k1, k2);
     assertEquals(0, k1.compareTo(k2));
-    assertEquals(k1, Key.inplace(Arrays.copyOf(k1.getBytesNoCopy(), k1.getBytesNoCopy().length)));
+    assertEquals(k1, Key.inplace(Arrays.copyOf(k1.getBytesNoCopy(), k1.getByteSize())));
   }
 
   @Test
@@ -46,5 +46,14 @@ public final class KeyTest {
 
     assertNotNull(k1Str);
     assertNotNull(k2Str);
+  }
+
+  @Test
+  public void shouldConvertToAndFromBase64() {
+    final Key key = Key.random();
+    final String base64 = key.toBase64();
+
+    assertNotNull(base64);
+    assertEquals(key, Key.fromBase64(base64));
   }
 }
