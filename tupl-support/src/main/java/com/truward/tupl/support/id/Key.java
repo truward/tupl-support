@@ -1,5 +1,7 @@
 package com.truward.tupl.support.id;
 
+import org.cojen.tupl.io.Utils;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.DatatypeConverter;
@@ -15,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Alexander Shabanov
  */
-public final class Key implements Serializable {
+public final class Key implements Serializable, Comparable<Key> {
 
   private static final long serialVersionUID = 25431698756923921L;
 
@@ -34,9 +36,15 @@ public final class Key implements Serializable {
     return new Key(arr);
   }
 
+  /**
+   * Returns internal byte array that constitutes the given key or empty byte array if key is null
+   *
+   * @param key Key
+   * @return Key's byte array or empty byte array if given key is null
+   */
   @Nonnull
   public static byte[] getKeyOrDefaultBytes(@Nullable Key key) {
-    return key != null ? key.getBytes() : EMPTY_ID;
+    return key != null ? key.getBytesNoCopy() : EMPTY_ID;
   }
 
   @Nonnull
@@ -64,23 +72,16 @@ public final class Key implements Serializable {
     return new Key(value.getBytes(StandardCharsets.UTF_8));
   }
 
-//  @Nonnull
-//  public static Key from(@Nonnull byte[] keyArray, int pos, int size) {
-//    if (size < 0) {
-//      throw new IllegalArgumentException("size < 0");
-//    }
-//
-//    if (size == 0) {
-//      return EMPTY_KEY;
-//    }
-//
-//    final byte[] key = new byte[size];
-//    System.arraycopy(Objects.requireNonNull(keyArray, "keyArray"), pos, key, 0, size);
-//    return inplace(key);
-//  }
-
+  /**
+   * Returns associated internal byte array that constitutes this key without making extra copy for safety.
+   * <p>
+   * WARNING: caller should not modify contents of the returned byte array.
+   * </p>
+   *
+   * @return Byte array, that constitutes this key, can be empty
+   */
   @Nonnull
-  public byte[] getBytes() {
+  public byte[] getBytesNoCopy() {
     return key;
   }
 
@@ -92,11 +93,22 @@ public final class Key implements Serializable {
   @Override
   public boolean equals(Object other) {
     return other instanceof Key &&
-        (other == this || Arrays.equals(((Key) other).getBytes(), getBytes()));
+        (other == this || Arrays.equals(((Key) other).getBytesNoCopy(), getBytesNoCopy()));
   }
 
   @Override
   public String toString() {
     return DatatypeConverter.printHexBinary(key);
+  }
+
+  /**
+   * Compares this key to the other using Tupl helper method for comparing unsigned arrays.
+   *
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(@Nonnull Key other) {
+    final byte[] otherKeyBytes = Objects.requireNonNull(other, "otherKey").getBytesNoCopy();
+    return Utils.compareUnsigned(getBytesNoCopy(), otherKeyBytes);
   }
 }

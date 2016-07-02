@@ -29,7 +29,7 @@ public interface TuplLoadSupport extends TuplTransactionSupport, TuplIndexSuppor
                            @Nonnull ByteArrayResultMapper<T> mapper,
                            @Nonnull Supplier<T> defaultValueSupplier) {
     return withTransaction(tx -> withIndex(indexName, index -> {
-      final byte[] result = index.load(tx, id.getBytes());
+      final byte[] result = index.load(tx, id.getBytesNoCopy());
       if (result == null) {
         return defaultValueSupplier.get();
       }

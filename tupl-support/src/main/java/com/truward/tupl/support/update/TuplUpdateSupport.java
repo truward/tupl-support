@@ -31,14 +31,14 @@ public interface TuplUpdateSupport extends TuplTransactionSupport, TuplIndexSupp
     return withTransaction(tx -> withIndex(indexName, index -> {
       Key resultId = id;
       if (resultId != null) {
-        if (!index.replace(tx, resultId.getBytes(), objectContents)) {
+        if (!index.replace(tx, resultId.getBytesNoCopy(), objectContents)) {
           throw new KeyNotFoundException(id);
         }
       } else {
         boolean inserted;
         do {
           resultId = Key.random();
-          inserted = index.insert(tx, resultId.getBytes(), objectContents);
+          inserted = index.insert(tx, resultId.getBytesNoCopy(), objectContents);
         } while (!inserted); // repeat until new key is created
       }
       return resultId;
@@ -56,7 +56,7 @@ public interface TuplUpdateSupport extends TuplTransactionSupport, TuplIndexSupp
                            @Nonnull Key id,
                            @Nonnull byte[] objectContents) {
     withTransaction(tx -> withIndex(indexName, index -> {
-      index.store(tx, id.getBytes(), objectContents);
+      index.store(tx, id.getBytesNoCopy(), objectContents);
       return null;
     }));
   }
@@ -69,6 +69,6 @@ public interface TuplUpdateSupport extends TuplTransactionSupport, TuplIndexSupp
    * @return True, if object with a specified key has been found
    */
   default boolean deleteObject(@Nonnull String indexName, @Nonnull Key id) {
-    return withTransaction(tx -> withIndex(indexName, index -> index.delete(tx, id.getBytes())));
+    return withTransaction(tx -> withIndex(indexName, index -> index.delete(tx, id.getBytesNoCopy())));
   }
 }
